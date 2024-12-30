@@ -12,7 +12,12 @@ int main(){
 	if ((fptr = fopen("daFileSystemBinary.bin", "wb+")) == NULL) {
 		printf("da disk failed: electric boogaloo \n");
 	}	
-	allocateBlocks(fptr);
+	if(!allocateBlocks(fptr)){
+		printf("failed to allocate blocks \nterminating program \n");
+		return -1;
+	}
+
+
 
 
 
@@ -35,7 +40,11 @@ bool allocateBlocks(FILE *F){
 	offset = 65536;
 	fseek(F, offset, SEEK_CUR);
 	fwrite(&sentinel, sizeof(uint16_t), 1, F);
-	printf("file has been written");
+	//subtracting those values since cur_seek pointer is positioned at the end of 
+	//inode table 
+	fseek(F, DISC_SPACE - 65536 - 512 - 400 - 8, SEEK_CUR);
+	fwrite(&sentinel, sizeof(uint16_t),1,F);
+	printf("file has been written \n");
 	return true;
 
 
