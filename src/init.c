@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
-
+#include "bitmap.h"
 
 #define DISC_SPACE (2 * 1024 * 1024)
 bool allocateBlocks(FILE *F);
@@ -16,7 +16,7 @@ int main(){
 		printf("failed to allocate blocks \nterminating program \n");
 		return -1;
 	}
-
+	initalizeBitMap(fptr);
 
 
 
@@ -41,12 +41,9 @@ bool allocateBlocks(FILE *F){
 	fseek(F, offset, SEEK_CUR);
 	fwrite(&sentinel, sizeof(uint16_t), 1, F);
 	//subtracting those values since cur_seek pointer is positioned at the end of 
-	//inode table 
+	//inode table + the size of the int as well so - 8 more
 	fseek(F, DISC_SPACE - 65536 - 512 - 400 - 8, SEEK_CUR);
 	fwrite(&sentinel, sizeof(uint16_t),1,F);
 	printf("file has been written \n");
 	return true;
-
-
-
 }
